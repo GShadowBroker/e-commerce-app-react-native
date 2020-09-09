@@ -18,3 +18,7 @@ web-build/
 
 # environment var
 .env
+
+# tests
+tests
+test.js

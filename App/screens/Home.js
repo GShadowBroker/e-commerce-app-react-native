@@ -13,6 +13,7 @@ import dress_3 from "../assets/images/new/3.jpg";
 
 import CategoryItem from "../components/CategoryItem";
 import Carousel from "../components/Carousel";
+import SmallCarousel from "../components/SmallCarousel";
 
 const SView = styled.ScrollView`
   flex: 1;
@@ -28,13 +29,14 @@ const SCategoriesContainer = styled.ScrollView`
 
 const SSectionTitle = styled.Text`
   margin-top: 20px;
-  text-align: center;
+  padding: 0 20px;
+  text-align: ${(props) => props.align};
   font-family: "sans-serif-condensed";
   font-size: 20px;
   font-weight: 700;
 `;
 
-export default function Home() {
+export default function Home({ navigation }) {
   const categories = [
     { id: 1, title: "roupas", componentName: "clothing", image: clothing },
     {
@@ -49,9 +51,30 @@ export default function Home() {
   ];
 
   const newProducts = [
-    { title: "Dress 1", price: 169.99, image: dress_1 },
-    { title: "Dress 2", price: 319.99, image: dress_2 },
-    { title: "Dress 3", price: 879.99, image: dress_3 },
+    {
+      id: "1",
+      title: "Dress 1",
+      price: 169.99,
+      images: [dress_1],
+      colors: ["#fff", "#f6f6"],
+      sizes: ["XL", "L", "M", "S", "XS"],
+    },
+    {
+      id: "2",
+      title: "Dress 2",
+      price: 319.99,
+      images: [dress_2],
+      colors: ["#fff", "#000", "#b4c5d1"],
+      sizes: ["XL", "L", "M", "S", "XS"],
+    },
+    {
+      id: "3",
+      title: "Dress 3",
+      price: 879.99,
+      images: [dress_3],
+      colors: ["#16f3", "#000", "#67a2a7"],
+      sizes: ["XL", "L", "M", "S", "XS"],
+    },
   ];
 
   return (
@@ -69,8 +92,28 @@ export default function Home() {
         ))}
       </SCategoriesContainer>
 
-      <SSectionTitle>Novas Ofertas</SSectionTitle>
+      <SSectionTitle align="center">Novas Ofertas</SSectionTitle>
       <Carousel items={newProducts} />
+
+      <SSectionTitle align="left">Destaques</SSectionTitle>
+      <SmallCarousel items={newProducts} />
+
+      <SSectionTitle align="left">Mais vendidos</SSectionTitle>
+      <SmallCarousel items={newProducts} />
+      <SmallCarousel items={newProducts} />
+
+      <SSectionTitle align="left">Visualizados Recentemente</SSectionTitle>
+      <SmallCarousel items={newProducts} />
+
+      <SSectionTitle align="left">Categorias</SSectionTitle>
+      <SCategoriesContainer
+        horizontal={true}
+        contentContainerStyle={{ alignItems: "center" }}
+      >
+        {categories.map((category) => (
+          <CategoryItem category={category} key={category.id} />
+        ))}
+      </SCategoriesContainer>
     </SView>
   );
 }

@@ -13,13 +13,13 @@ const SContainer = styled.TouchableOpacity`
   align-items: center;
   align-content: center;
   justify-content: center;
-  height: 430px;
-  max-width: 300px;
+  height: 280px;
+  max-width: 175px;
 `;
 
 const SProduct = styled.View`
-  height: 400px;
-  width: ${400 * (2 / 3)}px;
+  height: 250px;
+  width: ${250 * (2 / 3)}px;
   justify-content: center;
 `;
 
@@ -29,20 +29,20 @@ const SProductCard = styled.View`
 
 const STitle = styled.Text`
   text-align: center;
-  font-size: 18px;
+  font-size: 16px;
   font-family: "sans-serif-condensed";
-  margin: 10px 0 2px 0;
 `;
 
 const SPrice = styled.Text`
   text-align: center;
-  font-size: 16px;
+  font-size: 14px;
+  margin: 10px 0 2px 0;
   font-family: "sans-serif-condensed";
   color: ${colors.light.secondaryText};
 `;
 
-export const Slide = ({ item }) => {
-  const { title, images, price } = item;
+export const SmallSlide = ({ item }) => {
+  const { title, price, images } = item;
   const navigation = useNavigation();
   return (
     <SContainer onPress={() => navigation.navigate("Product", { item })}>
@@ -60,11 +60,11 @@ export const Slide = ({ item }) => {
             }}
           ></ImageBackground>
         </SProductCard>
-        <STitle>{title}</STitle>
         <SPrice>${price}</SPrice>
+        <STitle>{title}</STitle>
       </SProduct>
     </SContainer>
   );
 };
 
-export default Slide;
+export default SmallSlide;

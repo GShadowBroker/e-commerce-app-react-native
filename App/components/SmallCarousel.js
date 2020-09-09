@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import styled from "styled-components/native";
-import { Slide } from "./Slide";
+import { SmallSlide } from "./SmallSlide";
 
 const styles = StyleSheet.create({
   statsHead: {
@@ -53,8 +53,8 @@ const Carousel = ({ items }) => {
 
   useEffect(() => {
     let offsetArray = [0];
-    for (let i = 0; i < items.length - 1; i++) {
-      offsetArray.push(offsetArray[i] + 300);
+    for (let i = 0; i < Math.floor(items.length) / 2 - 1; i++) {
+      offsetArray.push(offsetArray[i] + 350);
     }
     setOffsets(offsetArray);
   }, [items]);
@@ -70,17 +70,17 @@ const Carousel = ({ items }) => {
       <ScrollView
         horizontal={true}
         contentContainerStyle={{
-          width: 300 * items.length + 2 * (windowWidth - 300 - 30),
+          width: offsets[offsets.length - 1] + windowWidth,
         }}
         showsHorizontalScrollIndicator={false}
         scrollEventThrottle={200}
         decelerationRate="fast"
         pagingEnabled={false}
         snapToOffsets={offsets}
-        style={{ paddingHorizontal: windowWidth - 300 - 30 }}
+        style={{ paddingHorizontal: 5 }}
       >
         {items.map((item, index) => (
-          <Slide key={index} item={item} />
+          <SmallSlide key={index} item={item} />
         ))}
       </ScrollView>
     </Container>
