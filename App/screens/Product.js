@@ -1,11 +1,18 @@
-import React, { useContext } from "react";
+import React from "react";
 import { View, Text, ImageBackground, StatusBar } from "react-native";
 import styled from "styled-components/native";
-import { cartContext } from "../utils/CartContext";
 import { Ionicons } from "@expo/vector-icons";
-import globalStyle from "../constants/globalStyle";
+import { global } from "../constants/globalStyle";
 import Button from "../components/Button";
 import colors from "../constants/colors";
+
+import { useSelector, useDispatch } from "react-redux";
+import {
+  addToCart,
+  removeFromCart,
+  addToFavorites,
+  removeFromFavorites,
+} from "../store/cartReducer";
 
 const SContainer = styled.ScrollView`
   flex: 1;
@@ -90,28 +97,25 @@ const SBullets = styled.View`
 
 const Product = ({ navigation, route }) => {
   const { id, title, images, price, colors, sizes } = route.params.item;
-  const {
-    items,
-    addToCart,
-    favorites,
-    addToFavorites,
-    subtractFromFavorites,
-  } = useContext(cartContext);
+
+  const cart = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
 
   const isFavorited = () => {
-    if (favorites.find((f) => f.id === id)) return true;
+    if (cart.favorites.find((f) => f.id === id)) return true;
     return false;
   };
 
   const toggleFavorites = () => {
     if (isFavorited()) {
-      subtractFromFavorites(route.params.item);
+      dispatch(removeFromFavorites(route.params.item));
     } else {
-      addToFavorites(route.params.item);
+      dispatch(addToFavorites(route.params.item));
     }
   };
+
   return (
-    <SContainer style={globalStyle.light}>
+    <SContainer style={global.light}>
       <ProductImage>
         <SImage source={images[0]}>
           <BackButton onPress={() => navigation.goBack()}>
@@ -165,12 +169,12 @@ const Product = ({ navigation, route }) => {
       </STitleContainer>
 
       <SActionContainer>
-        {items.find((i) => i.id === id) ? (
+        {cart.items.find((i) => i.id === id) ? (
           <Button title="ADICIONADO" outlined={true} disabled={true} />
         ) : (
           <Button
             title="&#43;  CARRINHO"
-            handlePress={() => addToCart(route.params.item)}
+            handlePress={() => dispatch(addToCart(route.params.item))}
           />
         )}
         <Button

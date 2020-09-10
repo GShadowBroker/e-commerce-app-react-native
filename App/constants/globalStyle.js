@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-export default StyleSheet.create({
+export const global = StyleSheet.create({
   light: {
     fontFamily: "sans-serif-condensed",
   },

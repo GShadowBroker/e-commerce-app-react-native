@@ -1,10 +1,13 @@
 import React, { useState, useContext } from "react";
-import { TouchableOpacity, Text, StyleSheet } from "react-native";
-import { cartContext } from "../utils/CartContext";
+import { TouchableOpacity, Text, StyleSheet, Alert } from "react-native";
 import styled from "styled-components/native";
 import colors from "../constants/colors";
 import Button from "../components/Button";
 import { Entypo } from "@expo/vector-icons";
+import { global } from "../constants/globalStyle";
+
+import { useSelector, useDispatch } from "react-redux";
+import { addToCart, removeFromCart } from "../store/cartReducer";
 
 const SContainer = styled.View`
   flex: 1;
@@ -144,12 +147,49 @@ const SQteContainer = styled.View`
 `;
 
 const ShoppingCart = ({ navigation }) => {
-  const { items, total } = useContext(cartContext);
-  const [count, setCount] = useState(1);
+  const items = useSelector((state) => state.cart.items);
+  const dispatch = useDispatch();
 
+  /* const [count, setCount] = useState(1);
   const add = () => setCount(count + 1);
   const subtract = () => {
     count <= 1 ? setCount(0) : setCount(count - 1);
+  }; */
+
+  const totalPrice = () => {
+    if (items.length === 0) return 0;
+
+    return items
+      .map((i) => i.price * i.count)
+      .reduce((a, b) => a + b, 0)
+      .toFixed(2);
+  };
+
+  const removeItem = async (item) => {
+    const asyncAlert = () => {
+      return new Promise((resolve, reject) => {
+        Alert.alert(
+          "Excluir da sacola",
+          "Isso excluirá o item da sacola. Continuar?",
+          [
+            { text: "CANCELAR", onPress: () => resolve(false) },
+            { text: "EXCLUIR", onPress: () => resolve(true), style: "cancel" },
+          ],
+          { cancelable: false }
+        );
+      });
+    };
+
+    if (item.count > 1) return dispatch(removeFromCart(item));
+
+    const result = await asyncAlert();
+    if (result) {
+      return dispatch(removeFromCart(item));
+    }
+  };
+
+  const addItem = async (item) => {
+    dispatch(addToCart(item));
   };
 
   return (
@@ -199,12 +239,7 @@ const ShoppingCart = ({ navigation }) => {
                   <SSizeBoxes>
                     {item.sizes.map((size) => (
                       <SSizeBox key={size}>
-                        <Text
-                          style={{
-                            fontFamily: "sans-serif-condensed",
-                            fontSize: 11,
-                          }}
-                        >
+                        <Text style={{ ...global.light, fontSize: 11 }}>
                           {size}
                         </Text>
                       </SSizeBox>
@@ -212,7 +247,7 @@ const ShoppingCart = ({ navigation }) => {
                   </SSizeBoxes>
                 </SSizes>
                 <SQteContainer>
-                  <TouchableOpacity onPress={subtract}>
+                  <TouchableOpacity onPress={() => removeItem(item)}>
                     <Entypo
                       name="minus"
                       size={20}
@@ -222,13 +257,13 @@ const ShoppingCart = ({ navigation }) => {
 
                   <Text
                     style={{
-                      fontFamily: "sans-serif-condensed",
+                      ...global.light,
                       color: colors.light.secondaryText,
                     }}
                   >
-                    {count === 1 ? `1 item` : `${count} itens`}
+                    {item.count === 1 ? `1 item` : `${item.count} itens`}
                   </Text>
-                  <TouchableOpacity onPress={add}>
+                  <TouchableOpacity onPress={() => addItem(item)}>
                     <Entypo
                       name="plus"
                       size={20}
@@ -244,7 +279,7 @@ const ShoppingCart = ({ navigation }) => {
       <SCheckout>
         <STotal>
           <STotalText>Total:</STotalText>
-          <STotalText>$ {total.toFixed(2)}</STotalText>
+          <STotalText>$ {totalPrice()}</STotalText>
         </STotal>
         <SCheckoutButton>
           <Button

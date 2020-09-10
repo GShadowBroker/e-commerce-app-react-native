@@ -2,11 +2,12 @@ import React, { useContext } from "react";
 import { Text } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import { cartContext } from "../utils/CartContext";
+import { useSelector } from "react-redux";
 
 import Home from "../screens/Home";
 import ShoppingCart from "../screens/ShoppingCart";
 import Product from "../screens/Product";
+import Categories from "../screens/Categories";
 
 import colors from "../constants/colors";
 import { SimpleLineIcons } from "@expo/vector-icons";
@@ -39,7 +40,7 @@ const SBagBadge = styled.View`
 
 const MainStack = createStackNavigator();
 export const MainStackScreen = ({ navigation }) => {
-  const { items } = useContext(cartContext);
+  const items = useSelector((state) => state.cart.items);
   return (
     <MainStack.Navigator>
       <MainStack.Screen
@@ -94,6 +95,7 @@ export const MainStackScreen = ({ navigation }) => {
           headerShown: false,
         }}
       />
+      <MainStack.Screen name="Categorias" component={Categories} />
     </MainStack.Navigator>
   );
 };
@@ -104,6 +106,7 @@ const DrawerScreen = () => {
     <Drawer.Navigator initialRouteName="Home">
       <Drawer.Screen name="Home" component={MainStackScreen} />
       <Drawer.Screen name="Carrinho" component={ShoppingCart} />
+      <Drawer.Screen name="Categorias" component={Categories} />
     </Drawer.Navigator>
   );
 };
